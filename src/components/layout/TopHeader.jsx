@@ -1,8 +1,15 @@
 "use client";
 import React from "react";
+import { useRouter } from "next/navigation";
 import { IoLogOut } from "react-icons/io5";
 
 const TopHeader = ({ handleLogout, iscollapese = false }) => {
+  const router = useRouter();
+  const logoutAndRemoveToken = () => {
+    localStorage.removeItem("authToken");
+    if (handleLogout) handleLogout();
+    router.push("/");
+  };
   return (
     <header className="h-[60px] flex items-center justify-between px-6 bg-white shadow-sm">
       {/* Left Logo */}
@@ -12,7 +19,7 @@ const TopHeader = ({ handleLogout, iscollapese = false }) => {
 
       {/* Right Logout Button */}
       <button
-        onClick={handleLogout}
+        onClick={logoutAndRemoveToken}
         className="flex items-center gap-2 cursor-pointer rounded-md"
         style={{ fontWeight: 600 }}
       >

@@ -8,7 +8,7 @@ const raleway = Raleway({
 });
 
 
-const API_URL = "http://localhost:5000/meter/voltage-readings";
+const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/meter/voltage-readings`;
 
 const InstantaneousVoltage = () => {
   const [voltageData, setVoltageData] = useState(null);

@@ -1,3 +1,4 @@
+"use client"
 import React from "react";
 import { Raleway } from "next/font/google";
 
@@ -6,75 +7,115 @@ const raleway = Raleway({
   weight: ["400", "500", "600", "700"],
 });
 
+
+import { useEffect, useState } from "react";
+
+function formatTimestamp(isoString) {
+  if (!isoString) return "-";
+  const date = new Date(isoString);
+  const months = [
+    "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
+  ];
+  const month = months[date.getMonth()];
+  const day = date.getDate();
+  const year = date.getFullYear();
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  const seconds = String(date.getSeconds()).padStart(2, "0");
+  return `${month} ${day} ${year},${hours}:${minutes}:${seconds}`;
+}
+
 const InstantaneousDemand = () => {
-  const loadCurrentData = [
-    {
-      parameter: "I a (A)",
-      lastInterval: "0.000 A",
-      peak: "0.000 A",
-      timeOfPeak: "July 11 2025,13:00:00",
-    },
-    {
-      parameter: "I b (A)",
-      lastInterval: "0.000 A",
-      peak: "0.000 A",
-      timeOfPeak: "July 11 2025,13:00:00",
-    },
-    {
-      parameter: "I c (A)",
-      lastInterval: "0.000 A",
-      peak: "0.000 A",
-      timeOfPeak: "July 11 2025,13:00:00",
-    },
-    {
-      parameter: "I 4 (A)",
-      lastInterval: "0.000 A",
-      peak: "0.000 A",
-      timeOfPeak: "July 11 2025,13:00:00",
-    },
-  ];
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const powerData = [
-    {
-      parameter: "Demand Power Active (kW)",
-      lastInterval: "0.000 Kw",
-      peak: "0.000 Kw",
-      timeOfPeak: "July 11 2025,13:00:00",
-    },
-    {
-      parameter: "Demand Power Reactive (kVAR)",
-      lastInterval: "0.000 kVAR",
-      peak: "0.000 kVAR",
-      timeOfPeak: "July 11 2025,13:00:00",
-    },
-    {
-      parameter: "Demand Power Apparent (kVA)",
-      lastInterval: "0.000 kVA",
-      peak: "0.000 kVA",
-      timeOfPeak: "July 11 2025,13:00:00",
-    },
-  ];
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/meter/demand-readings`);
+        if (!res.ok) throw new Error("Server error: Failed to fetch data");
+        const json = await res.json();
+        setData(json);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
 
-  const renderSection = (title, data, bgColor = "bg-[#E5F3FDB0]") => (
+  const loadCurrentRows = data
+    ? [
+        {
+          parameter: "Ia (A)",
+          lastInterval: `${data.currentLastInterval["Ia (A)"] ?? "-"} A`,
+          peak: `${data.current["Ia (A)"]?.value ?? "-"} A`,
+          timeOfPeak: formatTimestamp(data.current["Ia (A)"]?.timestamp),
+        },
+        {
+          parameter: "Ib (A)",
+          lastInterval: `${data.currentLastInterval["Ib (A)"] ?? "-"} A`,
+          peak: `${data.current["Ib (A)"]?.value ?? "-"} A`,
+          timeOfPeak: formatTimestamp(data.current["Ib (A)"]?.timestamp),
+        },
+        {
+          parameter: "Ic (A)",
+          lastInterval: `${data.currentLastInterval["Ic (A)"] ?? "-"} A`,
+          peak: `${data.current["Ic (A)"]?.value ?? "-"} A`,
+          timeOfPeak: formatTimestamp(data.current["Ic (A)"]?.timestamp),
+        },
+      ]
+    : [];
+
+  const powerRows = data
+    ? [
+        {
+          parameter: "Demand Power Active (kW)",
+          lastInterval: `${data.powerLastInterval["Demand Power Active (kW)"] ?? "-"} kW`,
+          peak: `${data.power["Demand Power Active (kW)"]?.value ?? "-"} kW`,
+          timeOfPeak: formatTimestamp(data.power["Demand Power Active (kW)"]?.timestamp),
+        },
+        {
+          parameter: "Demand Power Reactive (kVAR)",
+          lastInterval: `${data.powerLastInterval["Demand Power Reactive (kVAR)"] ?? "-"} kVAR`,
+          peak: `${data.power["Demand Power Reactive (kVAR)"]?.value ?? "-"} kVAR`,
+          timeOfPeak: formatTimestamp(data.power["Demand Power Reactive (kVAR)"]?.timestamp),
+        },
+        {
+          parameter: "Demand Power Apparent (kVA)",
+          lastInterval: `${data.powerLastInterval["Demand Power Apparent (kVA)"] ?? "-"} kVA`,
+          peak: `${data.power["Demand Apparent (kVA)"]?.value ?? "-"} kVA`,
+          timeOfPeak: formatTimestamp(data.power["Demand Apparent (kVA)"]?.timestamp),
+        },
+      ]
+    : [];
+
+  const renderSection = (title, rows, bgColor = "bg-[#E5F3FDB0]") => (
     <>
       <tr className={`${bgColor} border-b border-gray-200`}>
         <td
           colSpan="4"
-          className="px-4 py-2 text-sm text-center font-semibold text-[#025697]"
+          className={`px-4 py-2 text-sm text-center font-semibold text-[#025697] bg-[#E5F3FDB0] ${raleway.className}`}
         >
           {title}
         </td>
       </tr>
-      {data.map((row, index) => (
+      {rows.map((row, index) => (
         <tr key={index} className="border-b border-gray-200 hover:bg-gray-50">
-          <td className="px-4 py-3 text-sm text-gray-700 font-medium">
+          <td className="px-4 py-3 text-sm text-gray-700 font-medium"
+          style={{ fontFamily: "Arial, sans-serif", width: "40%" }}>
             {row.parameter}
           </td>
-          <td className="px-4 py-3 text-sm text-gray-600">
+          <td className="px-4 py-3 text-sm text-gray-600"
+          style={{ fontFamily: "Arial, sans-serif", width: "20%" }}>
             {row.lastInterval}
           </td>
-          <td className="px-4 py-3 text-sm text-gray-600">{row.peak}</td>
-          <td className="px-4 py-3 text-sm text-gray-600">{row.timeOfPeak}</td>
+          <td className="px-4 py-3 text-sm text-gray-600"
+          style={{ fontFamily: "Arial, sans-serif", width: "20%" }}>{row.peak}</td>
+          <td className="px-4 py-3 text-sm text-gray-600"
+          style={{ fontFamily: "Arial, sans-serif", width: "20%" }}>{row.timeOfPeak}</td>
         </tr>
       ))}
     </>
@@ -118,8 +159,26 @@ const InstantaneousDemand = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {renderSection("DEMAND CURRENT", loadCurrentData)}
-                  {renderSection("DEMAND POWER", powerData)}
+                  {loading && (
+                    <tr>
+                      <td colSpan="4" className="text-center py-6 text-gray-500">
+                        Loading...
+                      </td>
+                    </tr>
+                  )}
+                  {error && (
+                    <tr>
+                      <td colSpan="4" className="text-center py-6 text-red-500">
+                        Error: {error}
+                      </td>
+                    </tr>
+                  )}
+                  {!loading && !error && (
+                    <>
+                      {renderSection("DEMAND CURRENT", loadCurrentRows)}
+                      {renderSection("DEMAND POWER", powerRows)}
+                    </>
+                  )}
                 </tbody>
               </table>
             </div>

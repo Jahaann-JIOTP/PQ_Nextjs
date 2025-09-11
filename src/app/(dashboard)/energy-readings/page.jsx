@@ -1,20 +1,21 @@
-import React from 'react';
+"use client";
+import React, { useEffect, useState } from 'react';
 import { Raleway } from 'next/font/google';
 
 const raleway = Raleway({
-  subsets: ['latin'], 
+  subsets: ['latin'],
   weight: ['400','500','600','700'],
 });
 
 const InstantaneousEnergy = () => {
-  // POWER section data
-  const powerData = [
-    { parameter: "Active(kW)", present: "1.250 kW" },
-    { parameter: "Reactive(kVAR)", present: "0.568 kVAR" },
-    { parameter: "Apparent(kVA)", present: "0.169 kVA" }
-  ];
+  // State for POWER section data
+  const [powerData, setPowerData] = useState([
+    { parameter: "Active (kWh)", present: "-" },
+    { parameter: "Reactive (kVARh)", present: "-" },
+    { parameter: "Apparent (kVAh)", present: "-" }
+  ]);
 
-  // INPUT METERING CHANNELS section data
+  // INPUT METERING CHANNELS section data (static)
   const inputMeteringChannels = [
     { parameter: "Input Metering Channel 1", present: "0" },
     { parameter: "Input Metering Channel 2", present: "0" },
@@ -23,7 +24,30 @@ const InstantaneousEnergy = () => {
     { parameter: "Input Metering Channel 5", present: "0" }
   ];
 
-  // Render section helper for 2 columns
+  useEffect(() => {
+    const fetchData = () => {
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/meter/energy-readings`)
+        .then(res => res.json())
+        .then(data => {
+          setPowerData([
+            { parameter: "Active (kWh)", present: data["Active (kWh)"] + " kWh" },
+            { parameter: "Reactive (kVARh)", present: data["Reactive (kVARh)"] + " kVARh" },
+            { parameter: "Apparent (kVAh)", present: data["Apparent (kVAh)"] + " kVAh" }
+          ]);
+        })
+        .catch(() => {
+          setPowerData([
+            { parameter: "Active (kWh)", present: "-" },
+            { parameter: "Reactive (kVARh)", present: "-" },
+            { parameter: "Apparent (kVAh)", present: "-" }
+          ]);
+        });
+    };
+    fetchData();
+    const interval = setInterval(fetchData, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   const renderSection = (title, data, bgColor = "bg-[#CAE8FD]") => (
     <>
       <tr className={`${bgColor} border-b border-gray-200`}>
@@ -33,8 +57,8 @@ const InstantaneousEnergy = () => {
       </tr>
       {data.map((row, index) => (
         <tr key={index} className="border-b border-gray-200 hover:bg-gray-50">
-          <td className="px-4 py-3 text-sm text-gray-700 font-medium">{row.parameter}</td>
-          <td className="px-4 py-3 text-sm text-gray-600">{row.present}</td>
+          <td className="px-4 py-3 text-sm text-gray-700 font-medium" style={{ fontFamily: "Arial, sans-serif"}}>{row.parameter}</td>
+          <td className="px-4 py-3 text-sm text-gray-600" style={{ fontFamily: "Arial, sans-serif"}}>{row.present}</td>
         </tr>
       ))}
     </>

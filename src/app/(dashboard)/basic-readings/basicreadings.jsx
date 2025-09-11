@@ -14,7 +14,7 @@ const InstantaneousReadings = () => {
   const [loading, setLoading] = useState(true);
   const fetchData = async () => {
     try {
-      const res = await fetch("http://localhost:5000/meter/basic-readings");
+      const res = await fetch( `${process.env.NEXT_PUBLIC_API_URL}/meter/basic-readings`, { cache: "no-store" });
       const data = await res.json();
       setApiData(data);
       setLoading(false);
@@ -25,7 +25,7 @@ const InstantaneousReadings = () => {
 
   useEffect(() => {
     fetchData();
-    const interval = setInterval(fetchData, 5000);
+    const interval = setInterval(fetchData, 1000);
     return () => clearInterval(interval);
   }, []);
 

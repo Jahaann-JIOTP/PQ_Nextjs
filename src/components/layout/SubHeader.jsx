@@ -1,23 +1,35 @@
 "use client";
 import React from "react";
 import { IoNotificationsOutline } from "react-icons/io5";
-import { privilegeConfig, privilegeOrder, sidebarLinksMap } from "../../constants/navigation";
+import {
+  privilegeConfig,
+  privilegeOrder,
+  sidebarLinksMap,
+} from "../../constants/navigation";
 import { usePathname, useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDashboard } from "@fortawesome/free-solid-svg-icons";
 import { CgMenuLeft } from "react-icons/cg";
 import { IoMdClose } from "react-icons/io";
+import Image from "next/image";
 
-const SubHeader = ({ activeTab: propActiveTab, handleTabClick: propHandleTabClick, onHamburgerClick, isSidebarOpen }) => {
+const SubHeader = ({
+  activeTab: propActiveTab,
+  handleTabClick: propHandleTabClick,
+  onHamburgerClick,
+  isSidebarOpen,
+}) => {
   const pathname = usePathname();
   const router = useRouter();
 
   // Derive activeTab from pathname
-  const activeTab = propActiveTab || Object.keys(privilegeConfig).find(
-    (key) => privilegeConfig[key].matchPaths.some((path) => pathname.startsWith(path))
-  ) || "Monitoring"; // Default to "Monitoring" if no match
+  const activeTab =
+    propActiveTab ||
+    Object.keys(privilegeConfig).find((key) =>
+      privilegeConfig[key].matchPaths.some((path) => pathname.startsWith(path))
+    ) ||
+    "Monitoring";
 
-  // Handle tab click to navigate to default child
   const handleTabClick = (tab) => {
     if (propHandleTabClick) {
       propHandleTabClick(tab);
@@ -25,7 +37,10 @@ const SubHeader = ({ activeTab: propActiveTab, handleTabClick: propHandleTabClic
     }
     const currentPrivilege = privilegeConfig[tab];
     const sidebarMenus = sidebarLinksMap[tab] || [];
-    const firstChild = sidebarMenus[0]?.submenu?.[0]?.href || sidebarMenus[0]?.href || currentPrivilege.href;
+    const firstChild =
+      sidebarMenus[0]?.submenu?.[0]?.href ||
+      sidebarMenus[0]?.href ||
+      currentPrivilege.href;
     router.push(firstChild);
   };
 
@@ -38,11 +53,7 @@ const SubHeader = ({ activeTab: propActiveTab, handleTabClick: propHandleTabClic
           onClick={onHamburgerClick}
           aria-label={isSidebarOpen ? "Close sidebar" : "Open sidebar"}
         >
-          {isSidebarOpen ? (
-            <IoMdClose size={26} />
-          ) : (
-            <CgMenuLeft size={26} />
-          )}
+          {isSidebarOpen ? <IoMdClose size={26} /> : <CgMenuLeft size={26} />}
         </button>
         {privilegeOrder.map((tabKey) => {
           const tab = privilegeConfig[tabKey];
@@ -63,7 +74,14 @@ const SubHeader = ({ activeTab: propActiveTab, handleTabClick: propHandleTabClic
           );
         })}
       </div>
-      <IoNotificationsOutline size={20} className="text-white cursor-pointer" />
+      {/* <IoNotificationsOutline size={25} className="text-white cursor-pointer" /> */}
+      <Image
+        src="/basil_notification-solid.png"
+        alt="Notifications"
+        width={25}
+        height={25}
+        className="cursor-pointer"
+      />
     </div>
   );
 };

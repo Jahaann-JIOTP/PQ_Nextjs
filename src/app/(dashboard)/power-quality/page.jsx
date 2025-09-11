@@ -17,7 +17,7 @@ const InstantaneousPower = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch('http://localhost:5000/meter/power-quality');
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/meter/power-quality` , { cache: "no-store" });
         if (!res.ok) throw new Error('Network response was not ok');
         const json = await res.json();
         setData(json);
