@@ -29,6 +29,7 @@ const waveforms = () => {
     if (chartRef.current) {
       root = am5.Root.new(chartRef.current);
       root.setThemes([am5themes_Animated.new(root)]);
+      root._logo.dispose();
 
       const chart = root.container.children.push(
         am5xy.XYChart.new(root, {

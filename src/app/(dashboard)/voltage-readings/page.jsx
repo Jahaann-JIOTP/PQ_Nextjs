@@ -184,7 +184,7 @@ const InstantaneousVoltage = () => {
                 </thead>
                 <tbody>
                   {loading ? (
-                    <tr><td colSpan="4" className="text-center py-6">Loading...</td></tr>
+                    <tr><td colSpan="4" className="text-center py-6 text-black">Loading...</td></tr>
                   ) : (
                     <>
                       {renderSection("VOLTAGE L-L", getVoltageLLRows())}

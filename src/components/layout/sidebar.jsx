@@ -42,7 +42,7 @@ const Sidebar = ({ activeTab: propActiveTab, isOpen = true, onClose }) => {
     <aside
   className={`fixed left-0 top-[110px] h-[calc(100vh-50px)] border-t-3 border-[#1F5897] rounded-lg shadow-2xl bg-white text-black py-3 z-[100] flex flex-col transition-transform duration-300
       ${isCollapse ? "w-[60px]" : "w-[70vw] sm:w-[40vw] md:w-[20vw] 2xl:w-[15vw]"}
-      ${isOpen ? "mx-2 my-3 translate-x-0" : "-translate-x-full"}
+      ${isOpen ? "w-48 mx-1.5 my-3 translate-x-0" : "-translate-x-full"}
       2xl:static 2xl:top-auto 2xl:h-auto 2xl:translate-x-0 2xl:mx-3 2xl:my-3 2xl:flex`}
       style={{ minWidth: isCollapse ? 60 : undefined }}
     >
@@ -74,3 +74,5 @@ const Sidebar = ({ activeTab: propActiveTab, isOpen = true, onClose }) => {
 };
 
 export default Sidebar;
+
+
