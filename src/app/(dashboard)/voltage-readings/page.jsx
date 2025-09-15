@@ -27,7 +27,7 @@ const InstantaneousVoltage = () => {
       }
     };
     fetchData();
-    intervalId = setInterval(fetchData, 5000);
+    intervalId = setInterval(fetchData, 2000);
     return () => clearInterval(intervalId);
   }, []);
 
@@ -89,7 +89,7 @@ const InstantaneousVoltage = () => {
         parameter: "V L-N Average (V)",
         minimum: voltageLN?.minVoltageLN + " V",
         present: voltageLN?.["Voltage L-N Average (V)"]?.toFixed(2) + " V",
-        maximum: voltageLN?.maxVoltageLN + " V",
+        maximum: voltageLN?.maxVoltageLN?.toFixed(2) + " V",
       },
     ];
   };
