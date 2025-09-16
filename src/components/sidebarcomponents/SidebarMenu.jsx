@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import SidebarDropdown from "./SidebarDropdown";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 export default function SidebarMenu({ isCollapse, items }) {
   const pathname = usePathname();
@@ -58,7 +59,7 @@ export default function SidebarMenu({ isCollapse, items }) {
             activeTab={activeTab}
           />
         ) : (
-          <a
+          <Link
             key={item.title}
             href={item.href}
             className={`group flex w-full p-2 rounded-md text-[13.216px] hover:bg-gray-200 transition-all duration-300 ${
@@ -91,7 +92,7 @@ export default function SidebarMenu({ isCollapse, items }) {
                 {item.title}
               </span>
             )}
-          </a>
+          </Link>
         )
       )}
     </div>

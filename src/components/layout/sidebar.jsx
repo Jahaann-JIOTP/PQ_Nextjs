@@ -8,16 +8,36 @@ import { privilegeConfig, sidebarLinksMap } from "../../constants/navigation";
 
 const Sidebar = ({ activeTab: propActiveTab, isOpen = true, onClose }) => {
   const [isCollapse, setIsCollapse] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(
+    typeof window !== 'undefined' ? window.innerWidth : 0
+  );
   const router = useRouter();
   const pathname = usePathname();
 
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const activeTab = propActiveTab || Object.keys(privilegeConfig).find(
     (key) => privilegeConfig[key].matchPaths.some((path) => pathname.startsWith(path))
-  ) || "dashboard"; 
+  ) || "dashboard";
 
   const currentPrivilege = privilegeConfig[activeTab];
 
-  const sidebarMenus = sidebarLinksMap[activeTab] || [];
+  let sidebarMenus = [];
+  if (windowWidth < 1536) {
+    // Small device: show all menus
+    sidebarMenus = [
+      ...sidebarLinksMap["Monitoring"],
+      ...sidebarLinksMap["Diagnostics"],
+      ...sidebarLinksMap["User Management"]
+    ];
+  } else {
+    // Desktop: show only activeTab's menu
+    sidebarMenus = sidebarLinksMap[activeTab] || [];
+  }
 
 
   useEffect(() => {
@@ -39,13 +59,14 @@ const Sidebar = ({ activeTab: propActiveTab, isOpen = true, onClose }) => {
   }, [pathname, currentPrivilege, router, sidebarMenus, activeTab]);
 
   return (
-    <aside
-  className={`fixed left-0 top-[110px] h-[calc(100vh-50px)] border-t-3 border-[#1F5897] rounded-lg shadow-2xl bg-white text-black py-3 z-[100] flex flex-col transition-transform duration-300
-      ${isCollapse ? "w-[60px]" : "w-[70vw] sm:w-[40vw] md:w-[20vw] 2xl:w-[15vw]"}
-      ${isOpen ? "w-48 mx-1.5 my-3 translate-x-0" : "-translate-x-full"}
-      2xl:static 2xl:top-auto 2xl:h-auto 2xl:translate-x-0 2xl:mx-3 2xl:my-3 2xl:flex`}
+  <aside
+  className={`fixed left-0 top-[110px] h-[calc(100vh-110px)] md:h-[calc(100vh-110px)] 2xl:h-[81vh] border-t-3 border-[#1F5897] rounded-lg shadow-2xl bg-white text-black py-3 z-[100] flex flex-col transition-transform duration-300
+      ${isCollapse ? "w-[60px]" : "w-[70vw] sm:w-[45vw] md:w-[30vw] lg:w-[20vw] xl:w-[16vw] 2xl:w-[17vw]"}
+      ${isOpen ? "translate-x-0 mx-1.5 my-3" : "-translate-x-full"}
+      2xl:static 2xl:top-auto 2xl:translate-x-0 2xl:mx-3 2xl:my-3 2xl:flex`}
       style={{ minWidth: isCollapse ? 60 : undefined }}
-    >
+>
+
       {/* Top Section */}
       <div
         className={`w-full border-b border-gray-300 flex px-4 ${

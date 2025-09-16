@@ -162,7 +162,7 @@ const sampleData = [
   }, [interval, target]);
 
   return (
-    <div className="w-full p-5 border-t-3 border-[#265F95] rounded-lg shadow-lg h-[calc(100vh-140px)] overflow-y-auto custom-scrollbar bg-white">
+    <div className="w-full p-5 border-t-3 border-[#265F95] rounded-lg shadow-lg h-[calc(100vh-134px)] overflow-y-auto custom-scrollbar bg-white">
       {/* Header */}
       <div className="mb-8">
         <h2 className="text-2xl font-bold text-gray-800 mb-2">Trending</h2>

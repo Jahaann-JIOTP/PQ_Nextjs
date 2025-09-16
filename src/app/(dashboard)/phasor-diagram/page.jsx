@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import Loader from '@/components/Loader';
 
 const phasorColors = {
   Va: '#f87171',
@@ -10,7 +12,6 @@ const phasorColors = {
   Ib: '#a78bfa',
   Ic: '#0ea5e9',
 };
-
 
 const PhasorDiagram = () => {
   const [phasors, setPhasors] = useState([]);
@@ -22,9 +23,8 @@ const PhasorDiagram = () => {
   useEffect(() => {
     const fetchPhasors = async () => {
       try {
-        const res = await fetch('http://localhost:5000/meter/phase-angles');
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/meter/phase-angles`);
         const data = await res.json();
-        // Prepare phasor array for table
         const voltagePhasors = Object.entries(data.voltage).map(([key, val]) => ({
           name: key,
           magnitude: parseFloat(val.magnitude),
@@ -57,22 +57,47 @@ const PhasorDiagram = () => {
     };
   };
 
-  // Show all phasors (voltage + current) in SVG
   const allPhasors = phasors;
 
+  // Animation variants for arrows
+  const arrowVariants = {
+    initial: { opacity: 0, pathLength: 0 },
+    animate: {
+      opacity: 1,
+      pathLength: 1,
+      transition: {
+        opacity: { duration: 0.5 },
+        pathLength: { duration: 0.8, ease: 'easeOut' },
+      },
+    },
+    exit: { opacity: 0, transition: { duration: 0.3 } },
+  };
+
   return (
-    <div className="w-full min-h-[80vh] flex flex-col bg-white border-t-3 border-[#265F95] rounded-lg shadow-xl p-4 sm:p-6 relative">
+    <div className="w-full min-h-[81vh] flex flex-col bg-white border-t-3 border-[#265F95] rounded-lg shadow-xl p-4 sm:p-6 relative">
       {/* Header */}
       <div className="mb-2">
         <h2 className="text-lg sm:text-xl font-bold text-gray-800">Phasor Diagram</h2>
         <p className="text-xs sm:text-sm text-gray-600">Voltage and current phasors from API. Only voltage arrows shown in diagram.</p>
       </div>
+      {loading && (
+        <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-10">
+          <Loader message="Loading Phasor Diagram Data..." />
+        </div>
+      )}
       <div className="flex flex-col lg:flex-row gap-8 lg:gap-20 mt-4 sm:mt-6 items-center justify-center w-full">
         {/* SVG Phasor Chart */}
         <div className="relative w-full max-w-[350px] sm:max-w-[400px] md:max-w-[420px] flex-shrink-0 flex-grow-0" style={{ aspectRatio: '1/1' }}>
           <svg width="100%" height="100%" viewBox={`0 0 ${size} ${size}`} className="w-full h-auto">
-            {/* Circle */}
-            <circle cx={center} cy={center} r={radius} fill="#f3faff" stroke="#bcd7f6" strokeWidth="2" />
+            {/* Static Circle */}
+            <circle
+              cx={center}
+              cy={center}
+              r={radius}
+              fill="#f3faff"
+              stroke="#bcd7f6"
+              strokeWidth="2"
+            />
             {/* Horizontal axis */}
             <line x1={center - radius} y1={center} x2={center + radius} y2={center} stroke="#888" strokeWidth="1" />
             {/* Vertical axis */}
@@ -89,25 +114,41 @@ const PhasorDiagram = () => {
               </marker>
             </defs>
             {/* All Phasor Arrows (Voltage + Current) */}
-            {allPhasors.map((p) => {
-              // Use different scaling for voltage and current
-              const scale = p.type === 'voltage' ? 220 : 30;
-              const { x, y } = getXY(p.magnitude / scale, p.angle);
-              return (
-                <g key={p.name + p.type}>
-                  <line
-                    x1={center}
-                    y1={center}
-                    x2={x}
-                    y2={y}
-                    stroke={p.color}
-                    strokeWidth="1"
-                    markerEnd="url(#arrow)"
-                  />
-                  <text x={x + 10} y={y - 10} fontSize="12" fill={p.color}>{p.name}</text>
-                </g>
-              );
-            })}
+            <AnimatePresence>
+              {allPhasors.map((p) => {
+                const scale = p.type === 'voltage' ? 240 : 30;
+                const { x, y } = getXY(p.magnitude / scale, p.angle);
+                return (
+                  <motion.g
+                    key={p.name + p.type}
+                    variants={arrowVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                  >
+                    <motion.line
+                      x1={center}
+                      y1={center}
+                      x2={x}
+                      y2={y}
+                      stroke={p.color}
+                      strokeWidth="1"
+                      markerEnd="url(#arrow)"
+                    />
+                    <motion.text
+                      x={x + 10}
+                      y={y - 10}
+                      fontSize="12"
+                      fill={p.color}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1, transition: { delay: 0.5, duration: 0.5 } }}
+                    >
+                      {p.name}
+                    </motion.text>
+                  </motion.g>
+                );
+              })}
+            </AnimatePresence>
           </svg>
         </div>
         {/* Table */}

@@ -41,45 +41,45 @@ const InstantaneousPower = () => {
       parameter: "V1 THD (%)",
       minimum:
         data?.minVoltageTHD?.["V1 THD (%)"] !== undefined
-          ? `${data.minVoltageTHD["V1 THD (%)"]}%`
+          ? `${data.minVoltageTHD["V1 THD (%)"]} %`
           : "-",
       present:
         data?.voltageTHD?.["V1 THD (%)"] !== undefined
-          ? `${data.voltageTHD["V1 THD (%)"]}%`
+          ? `${data.voltageTHD["V1 THD (%)"]} %`
           : "-",
       maximum:
         data?.maxVoltageTHD?.["V1 THD (%)"] !== undefined
-          ? `${data.maxVoltageTHD["V1 THD (%)"]}%`
+          ? `${data.maxVoltageTHD["V1 THD (%)"]} %`
           : "-",
     },
     {
       parameter: "V2 THD (%)",
       minimum:
         data?.minVoltageTHD?.["V2 THD (%)"] !== undefined
-          ? `${data.minVoltageTHD["V2 THD (%)"]}%`
+          ? `${data.minVoltageTHD["V2 THD (%)"]} %`
           : "-",
       present:
         data?.voltageTHD?.["V2 THD (%)"] !== undefined
-          ? `${data.voltageTHD["V2 THD (%)"]}%`
+          ? `${data.voltageTHD["V2 THD (%)"]} %`
           : "-",
       maximum:
         data?.maxVoltageTHD?.["V2 THD (%)"] !== undefined
-          ? `${data.maxVoltageTHD["V2 THD (%)"]}%`
+          ? `${data.maxVoltageTHD["V2 THD (%)"]} %`
           : "-",
     },
     {
       parameter: "V3 THD (%)",
       minimum:
         data?.minVoltageTHD?.["V3 THD (%)"] !== undefined
-          ? `${data.minVoltageTHD["V3 THD (%)"]}%`
+          ? `${data.minVoltageTHD["V3 THD (%)"]} %`
           : "-",
       present:
         data?.voltageTHD?.["V3 THD (%)"] !== undefined
-          ? `${data.voltageTHD["V3 THD (%)"]}%`
+          ? `${data.voltageTHD["V3 THD (%)"]} %`
           : "-",
       maximum:
         data?.maxVoltageTHD?.["V3 THD (%)"] !== undefined
-          ? `${data.maxVoltageTHD["V3 THD (%)"]}%`
+          ? `${data.maxVoltageTHD["V3 THD (%)"]} %`
           : "-",
     },
   ];
@@ -89,45 +89,45 @@ const InstantaneousPower = () => {
       parameter: "I1 THD (%)",
       minimum:
         data?.minCurrentTHD?.["I1 THD (%)"] !== undefined
-          ? `${data.minCurrentTHD["I1 THD (%)"]}%`
+          ? `${data.minCurrentTHD["I1 THD (%)"]} %`
           : "-",
       present:
         data?.currentTHD?.["I1 THD (%)"] !== undefined
-          ? `${data.currentTHD["I1 THD (%)"]}%`
+          ? `${data.currentTHD["I1 THD (%)"]} %`
           : "-",
       maximum:
         data?.maxCurrentTHD?.["I1 THD (%)"] !== undefined
-          ? `${data.maxCurrentTHD["I1 THD (%)"]}%`
+          ? `${data.maxCurrentTHD["I1 THD (%)"]} %`
           : "-",
     },
     {
       parameter: "I2 THD (%)",
       minimum:
         data?.minCurrentTHD?.["I2 THD (%)"] !== undefined
-          ? `${data.minCurrentTHD["I2 THD (%)"]}%`
+          ? `${data.minCurrentTHD["I2 THD (%)"]} %`
           : "-",
       present:
         data?.currentTHD?.["I2 THD (%)"] !== undefined
-          ? `${data.currentTHD["I2 THD (%)"]}%`
+          ? `${data.currentTHD["I2 THD (%)"]} %`
           : "-",
       maximum:
         data?.maxCurrentTHD?.["I2 THD (%)"] !== undefined
-          ? `${data.maxCurrentTHD["I2 THD (%)"]}%`
+          ? `${data.maxCurrentTHD["I2 THD (%)"]} %`
           : "-",
     },
     {
       parameter: "I3 THD (%)",
       minimum:
         data?.minCurrentTHD?.["I3 THD (%)"] !== undefined
-          ? `${data.minCurrentTHD["I3 THD (%)"]}%`
+          ? `${data.minCurrentTHD["I3 THD (%)"]} %`
           : "-",
       present:
         data?.currentTHD?.["I3 THD (%)"] !== undefined
-          ? `${data.currentTHD["I3 THD (%)"]}%`
+          ? `${data.currentTHD["I3 THD (%)"]} %`
           : "-",
       maximum:
         data?.maxCurrentTHD?.["I3 THD (%)"] !== undefined
-          ? `${data.maxCurrentTHD["I3 THD (%)"]}%`
+          ? `${data.maxCurrentTHD["I3 THD (%)"]} %`
           : "-",
     },
     {
@@ -212,7 +212,7 @@ const InstantaneousPower = () => {
   return (
     <div>
       <div
-        className={`w-full p-1 sm:p-2 md:p-4 lg:p-6 border-t-3 border-[#265F95] rounded-lg shadow-lg h-[calc(100vh-140px)] overflow-y-auto custom-scrollbar transition-all duration-300 ${raleway.className}`}
+        className={`w-full p-1 sm:p-2 md:p-4 lg:p-6 border-t-3 border-[#265F95] rounded-lg shadow-lg h-[calc(100vh-134px)] overflow-y-auto custom-scrollbar transition-all duration-300 ${raleway.className}`}
       >
         <div className="px-2 py-2 sm:px-4 sm:py-3 md:px-6 md:py-4 bg-gray-50 rounded-md shadow-sm">
           <h2

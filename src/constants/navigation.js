@@ -92,27 +92,22 @@ export const sidebarLinksMap = {
   Diagnostics: [
     {
       id: 0,
-      title: "Phasor Diagram",
-      icon: PowerIcon,   
-      href: "/phasor-diagram",   
+      title: "Diagnostics",
+      icon: () => <FontAwesomeIcon icon={faPersonDotsFromLine} size="lg" />,
+      submenu: [
+        { id: 0, title: "Phasor Diagram", icon: PowerIcon, href: "/phasor-diagram" },
+      ],
     },
-    // {
-    //   id: 1,
-    //   title: "System Tests",
-    //   icon: MdOutlineManageSearch,
-    //   submenu: [
-    //     { id: 0, title: "Memory Test", href: "/diagnostics/memory" },
-    //     { id: 1, title: "CPU Test", href: "/diagnostics/cpu" },
-    //   ],
-    // },
   ],
 
   "User Management": [
     {
       id: 0,
-      title: "User List",
-      icon: AiOutlineClockCircle,
-      href: "/add_roles",
+      title: "User Management",
+      icon: () => <FontAwesomeIcon icon={faUsersGear} size="lg" />,
+      submenu: [
+        { id: 0, title: "User List", icon: AiOutlineClockCircle, href: "/add_roles" },
+      ],
     },
   ],
 };

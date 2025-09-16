@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { Raleway } from "next/font/google";
+import Loader from "@/components/Loader"; 
 
 const raleway = Raleway({
   subsets: ["latin"],
@@ -197,7 +198,7 @@ const InstantaneousReadings = () => {
   return (
     <div>
       <div
-        className={`w-full p-1 sm:p-2 md:p-4 lg:p-6 border-t-3 border-[#265F95] rounded-lg shadow-lg h-[calc(100vh-140px)] overflow-y-auto custom-scrollbar transition-all duration-300 ${raleway.className}`}
+        className={`w-full p-1 sm:p-2 md:p-4 lg:p-6 border-t-3 border-[#265F95] rounded-lg shadow-lg h-[calc(100vh-134px)] overflow-y-auto custom-scrollbar transition-all duration-300 ${raleway.className}`}
       >
         {/* Header Card */}
         <div className="px-2 py-2 sm:px-4 sm:py-3 md:px-6 md:py-4 bg-gray-50 rounded-md shadow-sm">
@@ -251,7 +252,7 @@ const InstantaneousReadings = () => {
                   {loading ? (
                     <tr>
                       <td colSpan="4" className="text-center py-6">
-                        Loading...
+                        <Loader message="Loading Basic Reading Data..." />
                       </td>
                     </tr>
                   ) : (

@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import { Raleway } from 'next/font/google';
+import loader from '@/components/Loader';
 
 const raleway = Raleway({
   subsets: ['latin'],
@@ -8,14 +9,12 @@ const raleway = Raleway({
 });
 
 const InstantaneousEnergy = () => {
-  // State for POWER section data
   const [powerData, setPowerData] = useState([
     { parameter: "Active (kWh)", present: "-" },
     { parameter: "Reactive (kVARh)", present: "-" },
     { parameter: "Apparent (kVAh)", present: "-" }
   ]);
 
-  // INPUT METERING CHANNELS section data (static)
   const inputMeteringChannels = [
     { parameter: "Input Metering Channel 1", present: "0" },
     { parameter: "Input Metering Channel 2", present: "0" },
@@ -66,7 +65,7 @@ const InstantaneousEnergy = () => {
 
   return (
     <div className={raleway.className}>
-      <div className="w-full p-1 sm:p-2 md:p-4 lg:p-6 border-t-3 border-[#265F95] rounded-lg shadow-lg h-[calc(100vh-140px)] overflow-y-auto custom-scrollbar transition-all duration-300">
+      <div className="w-full p-1 sm:p-2 md:p-4 lg:p-6 border-t-3 border-[#265F95] rounded-lg shadow-lg h-[calc(100vh-134px)] overflow-y-auto custom-scrollbar transition-all duration-300">
         {/* Header Card */}
         <div className="px-4 py-3 sm:px-6 sm:py-4 bg-gray-50 rounded-md shadow-sm">
           <h2 className="text-lg sm:text-xl font-semibold text-gray-800">

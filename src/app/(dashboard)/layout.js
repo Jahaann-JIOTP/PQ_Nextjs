@@ -49,7 +49,10 @@ export default function DashboardLayout({ children }) {
         isSidebarOpen={sidebarOpen}
       />
       <div className="flex flex-1">
-        <Sidebar activeTab={activeTab} handleTabClick={handleTabClick} isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+        {/* Sidebar: show on 2xl+ always, on mobile only if sidebarOpen */}
+        <div className={"fixed 2xl:static z-[100]" + (sidebarOpen ? " block" : " hidden") + " 2xl:block"}>
+          <Sidebar activeTab={activeTab} handleTabClick={handleTabClick} isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+        </div>
         <main className="flex-1 overflow-auto p-3 pl-1.5">{children}</main>
       </div>
     </div>
