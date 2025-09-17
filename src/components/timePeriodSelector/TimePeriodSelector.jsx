@@ -76,8 +76,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { HiChevronDown } from "react-icons/hi";
 
-const TimePeriodSelector = () => {
-  const [interval, setInterval] = useState("today");
+
+const TimePeriodSelector = ({ interval, setInterval }) => {
   const [intervalPeriod, setIntervalPeriod] = useState({
     startDate: "",
     endDate: "",

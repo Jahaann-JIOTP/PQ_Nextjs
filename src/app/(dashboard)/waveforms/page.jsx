@@ -13,7 +13,6 @@ const Waveforms = () => {
   const [error, setError] = useState(null);
   const [initialLoading, setInitialLoading] = useState(true);
 
-
   React.useEffect(() => {
     let intervalId;
     const fetchData = () => {
@@ -24,7 +23,6 @@ const Waveforms = () => {
           setWaveformData(data);
           setLoading(false);
           if (initialLoading) setInitialLoading(false);
-
         })
         .catch(() => {
           setError('Failed to fetch data');
@@ -51,7 +49,8 @@ const Waveforms = () => {
           wheelY: "zoomX",
           pinchZoomX: true,
           paddingLeft: 0,
-          paddingRight: 1
+          paddingRight: 20,
+          layout: root.verticalLayout
         })
       );
 
@@ -173,6 +172,7 @@ const Waveforms = () => {
             tooltip: am5.Tooltip.new(root, { labelText: "{name}: {valueY}" })
           })
         );
+        
         series.data.setAll(chartData);
 
         // Enable smooth animation for line updates with easing
@@ -195,6 +195,55 @@ const Waveforms = () => {
         chart.series.values[0].strokes.template.setAll({ strokeWidth: 2 });
       }
 
+      // Add scrollbar
+      const scrollbarX = chart.set(
+        "scrollbarX",
+        am5xy.XYChartScrollbar.new(root, {
+          orientation: "horizontal",
+          height: 15
+        })
+      );
+
+      // Customize grips using templates
+      const customizeGrip = (grip) => {
+        // Disable default icon and background
+        grip.set("draw", (display) => {
+          display.clear(); // Clear default grip content
+          
+          // Create rotated square (diamond)
+          const rect = am5.Rectangle.new(root, {
+            width: 6,
+            height: 6,
+            fill: am5.color("#999"),
+            rotation: 45,
+            centerX: am5.p50,
+            centerY: am5.p50
+          });
+          grip.children.push(rect);
+
+          // Create vertical line
+          const line = am5.Rectangle.new(root, {
+            width: 2,
+            height: 15,
+            fill: am5.color("#999"),
+            centerX: am5.p50,
+            centerY: am5.p50
+          });
+          grip.children.push(line);
+        });
+      };
+
+      // Apply customization to start and end grips
+      customizeGrip(scrollbarX.startGrip);
+      customizeGrip(scrollbarX.endGrip);
+
+      // Clear any default filters on the scrollbar chart (fix TypeError)
+      const scrollbarChart = scrollbarX.get("scrollbarChart");
+      if (scrollbarChart && scrollbarChart.plotContainer) {
+        scrollbarChart.plotContainer.get("filters").clear();
+      }
+
+      // Add legend
       chart.children.push(
         am5.Legend.new(root, {
           centerX: am5.p50,
@@ -275,7 +324,6 @@ const Waveforms = () => {
       </div>
 
       {/* Legend */}
-      {/* <div className="mt-8 w-full bg-blue-100 rounded-lg py-6 px-4 flex flex-col items-center"></div> */}
       <div className="flex flex-wrap justify-center gap-8 mb-2 mt-8">
         {[
           { key: 'V1', label: 'V1 (V)', color: 'bg-green-500', light: 'bg-green-200' },
