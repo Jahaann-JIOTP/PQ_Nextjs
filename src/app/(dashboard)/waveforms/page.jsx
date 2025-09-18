@@ -204,13 +204,10 @@ const Waveforms = () => {
         })
       );
 
-      // Customize grips using templates
       const customizeGrip = (grip) => {
-        // Disable default icon and background
         grip.set("draw", (display) => {
-          display.clear(); // Clear default grip content
-          
-          // Create rotated square (diamond)
+          display.clear(); 
+    
           const rect = am5.Rectangle.new(root, {
             width: 6,
             height: 6,
@@ -221,7 +218,6 @@ const Waveforms = () => {
           });
           grip.children.push(rect);
 
-          // Create vertical line
           const line = am5.Rectangle.new(root, {
             width: 2,
             height: 15,
@@ -233,17 +229,14 @@ const Waveforms = () => {
         });
       };
 
-      // Apply customization to start and end grips
       customizeGrip(scrollbarX.startGrip);
       customizeGrip(scrollbarX.endGrip);
 
-      // Clear any default filters on the scrollbar chart (fix TypeError)
       const scrollbarChart = scrollbarX.get("scrollbarChart");
       if (scrollbarChart && scrollbarChart.plotContainer) {
         scrollbarChart.plotContainer.get("filters").clear();
       }
 
-      // Add legend
       chart.children.push(
         am5.Legend.new(root, {
           centerX: am5.p50,
@@ -252,10 +245,8 @@ const Waveforms = () => {
         })
       );
 
-      // Animate chart appearance
       chart.appear(1000, 100);
 
-      // Add animation for data updates
       chart.events.on("datavalidated", () => {
         chart.series.each(series => {
           series.animate({

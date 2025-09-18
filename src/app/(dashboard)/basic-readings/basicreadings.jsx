@@ -77,7 +77,7 @@ const InstantaneousReadings = () => {
         minimum: "",
         present:
           data.current["Current Unbalance (%)"] !== undefined
-            ? (parseFloat(data.current["Current Unbalance (%)"]) * 100).toFixed(
+            ? (parseFloat(data.current["Current Unbalance (%)"])).toFixed(
                 2
               ) + "%"
             : "N/A",

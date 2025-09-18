@@ -29,9 +29,9 @@ const InstantaneousEnergy = () => {
         .then(res => res.json())
         .then(data => {
           setPowerData([
-            { parameter: "Active (kWh)", present: data["Active (kWh)"] + " kWh" },
-            { parameter: "Reactive (kVARh)", present: data["Reactive (kVARh)"] + " kVARh" },
-            { parameter: "Apparent (kVAh)", present: data["Apparent (kVAh)"] + " kVAh" }
+            { parameter: "Active (kWh)", present: data["Active (kWh)"] + " kWH" },
+            { parameter: "Reactive (kVARh)", present: data["Reactive (kVARh)"] + " kVARH" },
+            { parameter: "Apparent (kVAh)", present: data["Apparent (kVAh)"] + " kVAH" }
           ]);
         })
         .catch(() => {

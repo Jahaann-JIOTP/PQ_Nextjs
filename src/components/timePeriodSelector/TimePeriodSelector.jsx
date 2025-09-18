@@ -91,7 +91,7 @@ const TimePeriodSelector = ({ interval, setInterval }) => {
     { label: "This Week", value: "thisweek" },
     { label: "Last 7 days", value: "last7days" },
     { label: "This Month", value: "thismonth" },
-    { label: "Last 30 days", value: "last30days" },
+    { label: "Last 30 days", value: "lastMonth" },
     { label: "This Year", value: "thisyear" },
     { label: "Custom", value: "custom" },
   ];

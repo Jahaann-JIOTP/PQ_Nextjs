@@ -18,25 +18,28 @@ const PowerQualityChart = () => {
     let isUnmounted = false;
     async function fetchData() {
       try {
-        const res = await fetch(`http://localhost:5000/graph/latest?channel=${channel}`);
-        const data = await res.json();
-        let odd = Array.isArray(data.odd) ? data.odd : [];
+        // Fetch THD values
+        const thdRes = await fetch(`http://localhost:5000/graph/latest?thd=${channel}`);
+        const thdData = await thdRes.json();
+        if (!isUnmounted) {
+          setThd(thdData.THD || '0.00 %');
+          setThdEven((typeof thdData.evenTHD === 'number' ? thdData.evenTHD.toFixed(2) : '0.00') + ' %');
+          setThdOdd((typeof thdData.oddTHD === 'number' ? thdData.oddTHD.toFixed(2) : '0.00') + ' %');
+        }
+
+        // Fetch harmonics data
+        const harmRes = await fetch(`http://localhost:5000/graph/harmonics?channel=${channel}`);
+        const harmData = await harmRes.json();
+        let odd = Array.isArray(harmData.odd) ? harmData.odd : [];
         odd = odd.filter(h => h.harmonicNumber >= 1).sort((a, b) => a.harmonicNumber - b.harmonicNumber);
-        let sum = 0;
-        const chartArr = odd.map((h, idx) => {
-          sum += h.value;
-          return {
-            harmonic: h.harmonicNumber,
-            maximum: h.value,
-            minimum: 0,
-            average: Number((sum / (idx + 1)).toFixed(4))
-          };
-        });
+        const chartArr = odd.map(h => ({
+          harmonic: h.harmonicNumber,
+          maximum: h.max ?? 0,
+          minimum: h.min ?? 0,
+          average: h.avg ?? 0
+        }));
         if (!isUnmounted) {
           setChartData(chartArr);
-          setThd(data.presentValue || '0.00 %');
-          setThdEven(data.stats?.evenTHD?.toFixed(2) + ' %' || '0.00 %');
-          setThdOdd(data.stats?.oddTHD?.toFixed(2) + ' %' || '0.00 %');
         }
       } catch (e) {
         if (!isUnmounted) {
@@ -48,7 +51,7 @@ const PowerQualityChart = () => {
       }
     }
     fetchData();
-    intervalId = setInterval(fetchData, 5000);
+    intervalId = setInterval(fetchData, 1000);
     return () => {
       isUnmounted = true;
       clearInterval(intervalId);

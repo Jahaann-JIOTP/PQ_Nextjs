@@ -49,7 +49,7 @@ const SubHeader = ({
       <div className="flex items-center space-x-6">
         {/* Hamburger/Cross for mobile (show only on small screens) */}
         <button
-          className="block mr-2 2xl:hidden text-white focus:outline-none"
+          className="block mr-2 2xl:hidden text-white focus:outline-none cursor-pointer"
           onClick={onHamburgerClick}
           aria-label={isSidebarOpen ? "Close sidebar" : "Open sidebar"}
         >

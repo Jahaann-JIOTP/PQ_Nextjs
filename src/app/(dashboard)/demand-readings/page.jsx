@@ -31,19 +31,31 @@ const InstantaneousDemand = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    let intervalId;
+    let isUnmounted = false;
     async function fetchData() {
       try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/meter/demand-readings`);
         if (!res.ok) throw new Error("Server error: Failed to fetch data");
         const json = await res.json();
-        setData(json);
+        if (!isUnmounted) {
+          setData(json);
+          setError(null);
+          setLoading(false);
+        }
       } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
+        if (!isUnmounted) {
+          setError(err.message);
+          setLoading(false);
+        }
       }
     }
     fetchData();
+    intervalId = setInterval(fetchData, 1000);
+    return () => {
+      isUnmounted = true;
+      clearInterval(intervalId);
+    };
   }, []);
 
   const loadCurrentRows = data

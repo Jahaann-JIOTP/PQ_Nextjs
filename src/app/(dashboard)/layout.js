@@ -35,9 +35,7 @@ export default function DashboardLayout({ children }) {
     }
   }, [pathname]);
 
-  useEffect(() => {
-    setSidebarOpen(false);
-  }, [pathname]);
+  // Removed auto-close sidebar on route change to prevent sidebar hiding after refresh
 
   return (
     <div className="flex flex-col min-h-screen bg-white" suppressHydrationWarning={true}>

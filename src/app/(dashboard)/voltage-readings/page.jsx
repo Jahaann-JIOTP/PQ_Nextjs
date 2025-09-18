@@ -27,7 +27,7 @@ const InstantaneousVoltage = () => {
       }
     };
     fetchData();
-    intervalId = setInterval(fetchData, 2000);
+    intervalId = setInterval(fetchData, 1000);
     return () => clearInterval(intervalId);
   }, []);
 
@@ -99,9 +99,9 @@ const InstantaneousVoltage = () => {
     return [
       {
         parameter: "Unbalanced %",
-        minimum: "0.000 %",
-        present: (voltageData["Voltage Unbalance (%)"] || "0.000") + " %",
-        maximum: "100.000 %",
+        minimum: "N/A",
+        present: `${Number(voltageData["Voltage Unbalance (%)"] || 0).toFixed(3)} %`,
+        maximum: "N/A",
       },
     ];
   };
