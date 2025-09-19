@@ -13,6 +13,8 @@ const TrendingChart = () => {
   const [openDropdown, setOpenDropdown] = useState(null);
   const [chartData, setChartData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -36,7 +38,15 @@ const TrendingChart = () => {
     const fetchData = async () => {
       setLoading(true);
       let param = target.charAt(0).toUpperCase() + target.slice(1);
-      let url = `http://localhost:5000/graph/trend/${interval}?parameter=${param}`;
+      let url = "";
+      if (interval === "custom" && startDate && endDate) {
+        // Format dates for API
+        const start = `${startDate}T00:00:00`;
+        const end = `${endDate}T23:59:59`;
+        url = `http://localhost:5000/graph/trend/custom?parameter=${param}&startDate=${start}&endDate=${end}`;
+      } else {
+        url = `http://localhost:5000/graph/trend/${interval}?parameter=${param}`;
+      }
       try {
         const res = await fetch(url);
         const data = await res.json();
@@ -45,7 +55,15 @@ const TrendingChart = () => {
           let time = '';
           if (item.interval) {
             const date = new Date(item.interval);
-            if (interval === "today" || interval === "yesterday") {
+            if (interval === "custom") {
+              // Show date for custom interval
+              time = date.toLocaleDateString('en-GB', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric',
+                timeZone: 'Asia/Karachi',
+              });
+            } else if (interval === "today" || interval === "yesterday") {
               // Hourly label
               time = date.toLocaleTimeString('en-US', {
                 hour: '2-digit',
@@ -87,8 +105,11 @@ const TrendingChart = () => {
         setLoading(false);
       }
     };
-    fetchData();
-  }, [target, interval]);
+    // Only fetch for custom if both dates selected
+    if (interval !== "custom" || (interval === "custom" && startDate && endDate)) {
+      fetchData();
+    }
+  }, [target, interval, startDate, endDate]);
 
   // Chart rendering effect (initialize only when not loading)
   const chartRoot = useRef(null);
@@ -278,7 +299,14 @@ const TrendingChart = () => {
           </div>
 
           {/* Time Period Selector */}
-          <TimePeriodSelector interval={interval} setInterval={setInterval} />
+          <TimePeriodSelector
+            interval={interval}
+            setInterval={setInterval}
+            startDate={startDate}
+            setStartDate={setStartDate}
+            endDate={endDate}
+            setEndDate={setEndDate}
+          />
         </div>
       </div>
 

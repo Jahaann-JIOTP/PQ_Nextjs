@@ -1,5 +1,6 @@
 "use client";
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import React, { useLayoutEffect, useRef, useState, useRef as useReactRef } from 'react';
+import { HiChevronDown } from "react-icons/hi";
 import * as am5 from "@amcharts/amcharts5";
 import * as am5xy from "@amcharts/amcharts5/xy";
 import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
@@ -7,6 +8,8 @@ import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 const PowerQualityChart = () => {
   const chartRef = useRef(null);
   const [channel, setChannel] = useState('V1');
+  const [openDropdown, setOpenDropdown] = useState(false);
+  const dropdownRef = useReactRef(null);
   const [chartData, setChartData] = useState([]);
   const [thd, setThd] = useState('0.00 %');
   const [thdEven, setThdEven] = useState('0.00 %');
@@ -173,22 +176,43 @@ const PowerQualityChart = () => {
         </p>
       </div>
 
-      {/* Channel & THD Row */}
-      <div className="flex items-center gap-8 mb-4">
-        <div className="flex items-center gap-2">
-          <label className="text-base font-medium text-gray-700">Channel</label>
-          <select
-            value={channel}
-            onChange={e => setChannel(e.target.value)}
-            className="border border-gray-300 text-black rounded-md px-2 py-1 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white min-w-[60px]"
+      {/* Channel & THD Row - Custom Dropdown */}
+      <div className="flex items-center gap-8 mb-4" ref={dropdownRef}>
+        <div className="relative flex items-center gap-3 w-full sm:w-auto">
+          <span className="text-base font-medium text-gray-700">Channel</span>
+          <div
+            className="flex items-center justify-between gap-6 cursor-pointer border border-gray-300 px-3 py-1 rounded bg-white w-full max-w-[120px] sm:w-[120px] hover:bg-gray-100 transition text-black"
+            onClick={() => setOpenDropdown(!openDropdown)}
           >
-            <option value="V1">V1</option>
-            <option value="V2">V2</option>
-            <option value="V3">V3</option>
-            <option value="I1">I1</option>
-            <option value="I2">I2</option>
-            <option value="I3">I3</option>
-          </select>
+            {channel}
+            <HiChevronDown className={`transition-transform ${openDropdown ? "rotate-180" : ""}`} />
+          </div>
+          {openDropdown && (
+           <div className="absolute top-full mt-2 left-18 z-50 w-[5.3rem] sm:w-30 rounded shadow-lg border border-gray-300 bg-white text-black">
+
+              <div className="py-1">
+                {["V1", "V2", "V3", "I1", "I2", "I3"].map((option) => (
+                  <label
+                    key={option}
+                    className="text-[14px] flex items-center px-4 py-2 cursor-pointer hover:bg-gray-100"
+                  >
+                    <input
+                      type="radio"
+                      name="channel"
+                      value={option}
+                      checked={channel === option}
+                      onChange={() => {
+                        setChannel(option);
+                        setOpenDropdown(false);
+                      }}
+                      className="mr-2"
+                    />
+                    {option}
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
         <div className="flex items-center gap-2">
           <span className="text-base font-medium text-gray-700">THD</span>

@@ -1,17 +1,21 @@
 "use client";
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useRef as useReactRef } from 'react';
 import * as am5 from "@amcharts/amcharts5";
 import * as am5xy from "@amcharts/amcharts5/xy";
 import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 import Loader from "@/components/Loader"; 
+import { HiChevronDown } from "react-icons/hi";
 
 const Waveforms = () => {
   const chartRef = useRef(null);
   const [channel, setChannel] = useState('cmt0-00001');
+  const [openDropdown, setOpenDropdown] = useState(false);
+  const dropdownRef = useReactRef(null);
   const [waveformData, setWaveformData] = useState({ voltage: {}, current: {} });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [initialLoading, setInitialLoading] = useState(true);
+  const [fetchTime, setFetchTime] = useState(null);
 
   React.useEffect(() => {
     let intervalId;
@@ -22,6 +26,7 @@ const Waveforms = () => {
         .then(data => {
           setWaveformData(data);
           setLoading(false);
+          setFetchTime(new Date());
           if (initialLoading) setInitialLoading(false);
         })
         .catch(() => {
@@ -114,12 +119,10 @@ const Waveforms = () => {
           );
           series.data.setAll(chartData);
 
-          // Enable smooth animation for line updates with easing
           series.set("sequencedInterpolation", true);
           series.set("sequencedInterpolationDelay", 50);
           series.set("interpolationEasing", am5.ease.out(am5.ease.cubic));
 
-          // Add pulsating animation for stroke width
           series.animate({
             key: "strokeWidth",
             from: 2,
@@ -175,12 +178,10 @@ const Waveforms = () => {
         
         series.data.setAll(chartData);
 
-        // Enable smooth animation for line updates with easing
         series.set("sequencedInterpolation", true);
         series.set("sequencedInterpolationDelay", 50);
         series.set("interpolationEasing", am5.ease.out(am5.ease.cubic));
 
-        // Add pulsating animation for stroke width
         series.animate({
           key: "strokeWidth",
           from: 2,
@@ -268,7 +269,7 @@ const Waveforms = () => {
     <div className="w-full p-1 sm:p-2 md:p-4 lg:p-6 border-t-3 border-[#265F95] rounded-lg shadow-lg h-[calc(100vh-134px)] overflow-y-auto custom-scrollbar transition-all duration-300">
       {/* Start Time Top Right */}
       <div className="absolute right-8 top-37 text-sm text-gray-700 bg-gray-100 px-3 py-1 rounded shadow-sm">
-        Start Time: 2020/04/24 , 18:49:20
+        Start Time: {fetchTime ? fetchTime.toLocaleString('en-GB', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '--'}
       </div>
 
       {/* Header */}
@@ -281,23 +282,42 @@ const Waveforms = () => {
         </p>
       </div>
 
-      {/* Channel Selector */}
-      <div className="flex items-center gap-8 mb-4">
-        <div className="flex items-center gap-2">
-          <label className="text-base font-medium text-gray-700">Channel</label>
-          <select
-            value={channel}
-            onChange={e => setChannel(e.target.value)}
-            className="border border-gray-300 text-black rounded-md px-2 py-1 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white min-w-[60px]"
+      {/* Channel Selector - Custom Dropdown */}
+      <div className="flex items-center gap-8 mb-4" ref={dropdownRef}>
+        <div className="relative flex items-center gap-3 w-full sm:w-auto">
+          <span className="text-base font-medium text-gray-700">Channel</span>
+          <div
+            className="flex items-center justify-between gap-6 cursor-pointer border border-gray-300 px-3 py-1 rounded bg-white w-full max-w-[160px] sm:w-[160px] hover:bg-gray-100 transition text-black"
+            onClick={() => setOpenDropdown(!openDropdown)}
           >
-            <option value="cmt0-00001">cmt0-00001</option>
-            <option value="V1">V1</option>
-            <option value="V2">V2</option>
-            <option value="V3">V3</option>
-            <option value="I1">I1</option>
-            <option value="I2">I2</option>
-            <option value="I3">I3</option>
-          </select>
+            {channel}
+            <HiChevronDown className={`transition-transform ${openDropdown ? "rotate-180" : ""}`} />
+          </div>
+          {openDropdown && (
+            <div className="absolute top-full mt-2 left-18 z-50 w-full sm:w-40 max-w-40 rounded shadow-lg border border-gray-300 bg-white text-black">
+              <div className="py-1">
+                {["cmt0-00001", "V1", "V2", "V3", "I1", "I2", "I3"].map((option) => (
+                  <label
+                    key={option}
+                    className="text-[14px] flex items-center px-4 py-2 cursor-pointer hover:bg-gray-100"
+                  >
+                    <input
+                      type="radio"
+                      name="channel"
+                      value={option}
+                      checked={channel === option}
+                      onChange={() => {
+                        setChannel(option);
+                        setOpenDropdown(false);
+                      }}
+                      className="mr-2"
+                    />
+                    {option}
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

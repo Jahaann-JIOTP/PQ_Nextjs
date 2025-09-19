@@ -77,11 +77,8 @@ import React, { useState, useRef, useEffect } from "react";
 import { HiChevronDown } from "react-icons/hi";
 
 
-const TimePeriodSelector = ({ interval, setInterval }) => {
-  const [intervalPeriod, setIntervalPeriod] = useState({
-    startDate: "",
-    endDate: "",
-  });
+const TimePeriodSelector = ({ interval, setInterval, startDate, setStartDate, endDate, setEndDate }) => {
+  // Remove local state for start/end date, use props instead
   const [openDropdown, setOpenDropdown] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -110,10 +107,11 @@ const TimePeriodSelector = ({ interval, setInterval }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setIntervalPeriod((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    if (name === "startDate") {
+      setStartDate(value);
+    } else if (name === "endDate") {
+      setEndDate(value);
+    }
   };
 
   return (
@@ -175,7 +173,7 @@ const TimePeriodSelector = ({ interval, setInterval }) => {
               style={{ width: "9rem" }}
               className="border-1 border-gray-300 rounded px-1 py-[2px] text-gray-600"
               onChange={handleChange}
-              value={intervalPeriod.startDate}
+              value={startDate}
             />
           </div>
 
@@ -192,9 +190,9 @@ const TimePeriodSelector = ({ interval, setInterval }) => {
               id="endDate"
               style={{ width: "9rem" }}
               className="border-1 border-gray-300 rounded px-1 py-[2px] text-gray-600"
-              min={intervalPeriod.startDate}
+              min={startDate}
               onChange={handleChange}
-              value={intervalPeriod.endDate}
+              value={endDate}
             />
           </div>
         </div>
